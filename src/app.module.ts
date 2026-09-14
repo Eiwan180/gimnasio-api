@@ -1,0 +1,18 @@
+import { Module } from '@nestjs/common';
+import { createObserveModule } from '@nestjs/observe';
+import { AppController } from './app.controller.js';
+import { AppService } from './app.service.js';
+import { ClasesModule } from './clases/clases.module.js';
+import { InscripcionesModule } from './inscripciones/inscripciones.module.js';
+import { InscripcionesService } from './inscripciones/inscripciones.service.js';
+
+export const { ObserveModule, ObserveInstrument } = createObserveModule();
+
+@Module({
+  imports: [
+  ClasesModule,
+  InscripcionesModule],
+  controllers: [AppController],
+  providers: [AppService, InscripcionesService],
+})
+export class AppModule {}

@@ -4,8 +4,6 @@
 **Institución:** Instituto Tecnológico de Sonora (ITSON)  
 **Programa:** Ingeniería en Software  
 
-Este repositorio contiene la implementación de la Práctica 6, cuyo objetivo fue separar la API en Controller, Service y Module, y conectarla al dominio de inscripciones mediante inyección de dependencias con token.
-
 ---
 
 ## Respuestas al Cuestionario
@@ -27,3 +25,20 @@ Un código `400 Bad Request` significa un error de sintaxis: el cliente envió d
 
 ### 6. ¿Por qué cambió el código de estado de esa última petición?
 Porque el estado de la aplicación mutó. Al cancelar una inscripción previa, se alteró la condición que provocaba el choque con las reglas de negocio (se liberó un espacio en el cupo o se eliminó la restricción del registro duplicado). Al ya no haber conflicto con la regla de negocio, la petición original ahora es válida y procesada exitosamente.
+
+## Práctica 7 - Módulo Miembros
+
+### 1. ¿Por qué la interfaz `MiembroRepository` no menciona Express, NestJS ni memoria?
+Porque pertenece a la capa de **Dominio**. Siguiendo los principios de la Arquitectura Limpia, el dominio contiene únicamente los contratos y entidades del negocio, por lo que debe mantenerse totalmente agnóstico e independiente de frameworks web y de los detalles de persistencia.
+
+### 2. ¿Qué palabra de la clase `MiembroMemoriaRepository` promete cumplir la interfaz del paso anterior?
+La palabra clave **`implements`**. En TypeScript, `implements` obliga a la clase a cumplir con la estructura y los contratos definidos por la interfaz `MiembroRepository`.
+
+### 3. ¿Por qué el Service no sabe qué es una petición HTTP?
+Porque la responsabilidad del **Service** es la lógica de negocio, no la comunicación web. El **Controller** es la única capa encargada de recibir las peticiones HTTP, validar los datos entrantes y estructurar la respuesta, manteniendo el servicio desacoplado y reutilizable en otros entornos.
+
+### 4. ¿Por qué el Service se inyecta sin token en el Controller, y el repositorio sí necesita uno?
+Porque el Service es una **clase** (`MiembrosService`), la cual conserva su tipo en tiempo de ejecución para que NestJS la identifique directamente. Por el contrario, el repositorio es una **interfaz** (`MiembroRepository`), y como las interfaces desaparecen al compilar de TypeScript a JavaScript, NestJS requiere un **Token de Inyección** (como `'MIEMBRO_REPOSITORY'`) para asociarle la implementación concretas.
+
+### 5. ¿Qué prueba, en los hechos, que agregar Miembros no rompió nada de Inscripciones?
+Se prueba al ejecutar de nuevo las peticiones HTTP del módulo de **Inscripciones** y confirmar que siguen respondiendo correctamente con los mismos datos y códigos de estado de la Práctica 6. Esto demuestra la efectividad de la arquitectura modular de NestJS al aislar las responsabilidades de cada módulo.

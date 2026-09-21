@@ -42,3 +42,15 @@ Porque el Service es una **clase** (`MiembrosService`), la cual conserva su tipo
 
 ### 5. ¿Qué prueba, en los hechos, que agregar Miembros no rompió nada de Inscripciones?
 Se prueba al ejecutar de nuevo las peticiones HTTP del módulo de **Inscripciones** y confirmar que siguen respondiendo correctamente con los mismos datos y códigos de estado de la Práctica 6. Esto demuestra la efectividad de la arquitectura modular de NestJS al aislar las responsabilidades de cada módulo.
+
+## Asignación 1 - Módulo Horarios
+
+### 1. ¿Por qué el Service se inyecta sin token en el Controller, y el repositorio sí necesita uno?
+El **Service** se inyecta directamente por tipo de clase (`HorariosService`), ya que en JavaScript las clases continúan existiendo como funciones constructoras en tiempo de ejecución, permitiendo a NestJS identificarlas como su propio token. 
+
+Por el contrario, el **repositorio** está definido como una interfaz (`HorariosRepository`). Dado que TypeScript elimina las interfaces al compilar a JavaScript, NestJS pierde esa referencia en ejecución y requiere obligatoriamente un **Token de Inyección** (como `'HORARIO_REPOSITORY'`) para saber qué clase concreta instanciar en su lugar.
+
+### 2. Si mandas un `claseId` que no es número, ¿qué código de estado esperarías, y por qué este Controller no lo detecta?
+El código de estado esperado para un tipo de dato inválido en la petición es **`400 Bad Request`**. 
+
+El Controller no lo detecta automáticamente porque las interfaces de TypeScript (como `CrearHorarioDto`) solo ofrecen tipado estático durante el desarrollo y desaparecen al compilar. En tiempo de ejecución, el cuerpo del JSON se procesa como JavaScript puro; por lo tanto, a menos que se implementen manualmente validaciones en el controlador o se configuren pipes de validación en NestJS (como `ValidationPipe` con `class-validator`), el framework deja pasar los datos sin validar sus tipos de entrada.
